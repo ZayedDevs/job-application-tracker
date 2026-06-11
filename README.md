@@ -56,7 +56,7 @@ cp .env.example .env.local
 Copy-Item .env.example .env.local
 ```
 
-## Or open VS Code in the project folder and create .env.local manually
+Or open VS Code in the project folder and create .env.local manually
 
 Then open `.env.local` and set your connection string:
 
