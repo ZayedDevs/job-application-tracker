@@ -64,7 +64,7 @@ export async function POST(request) {
     );
     return NextResponse.json(result.rows[0], { status: 201 });
   } catch (err) {
-    // 23503 = Postgres foreign_key_violation: status_id points at no real status.
+    
     if (err.code === '23503') {
       return NextResponse.json(
         { error: 'Invalid status_id: no matching status exists' },
