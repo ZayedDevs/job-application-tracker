@@ -20,7 +20,7 @@ export default function StatusSelect({ value, statuses, onChange }) {
           </option>
         ))}
       </select>
-      {/* Custom chevron — appearance-none removes the native one. */}
+      {}
       <svg
         className="pointer-events-none absolute right-2 h-3.5 w-3.5 text-ink-soft/60"
         viewBox="0 0 20 20"

@@ -22,7 +22,6 @@ export default function Modal({ onClose, children, maxWidth = 'max-w-lg' }) {
 
   return (
     <div
-      // Clicking the backdrop closes the modal; clicks on the card don't bubble.
       onClick={onClose}
       className="fixed inset-0 z-50 flex items-center justify-center bg-ink/30 p-4"
     >

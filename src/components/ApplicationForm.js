@@ -2,10 +2,6 @@
 
 import { useState } from 'react';
 
-// Add/edit form for a single application. One component serves both cases: pass
-// `initialData` to edit an existing row, or omit it to add a new one. The parent
-// owns the data and the API calls — this component only collects input,
-// validates it, and hands a clean payload back through onSubmit.
 
 const EMPTY = {
   company: '',
@@ -24,8 +20,6 @@ export default function ApplicationForm({
 }) {
   const isEditing = initialData !== null;
 
-  // Seed the fields from initialData when editing. The API returns a full
-  // timestamp, but the native date input needs a plain YYYY-MM-DD, so trim it.
   const [values, setValues] = useState(() => {
     if (!initialData) return EMPTY;
     return {
@@ -67,9 +61,9 @@ export default function ApplicationForm({
       company: values.company.trim(),
       role: values.role.trim(),
       date_applied: values.date_applied,
-      // The select gives a string; the API and DB expect a number.
+  
       status_id: Number(values.status_id),
-      // Send null rather than an empty string when notes are blank.
+  
       notes: values.notes.trim() === '' ? null : values.notes.trim(),
     });
   }
@@ -175,8 +169,6 @@ export default function ApplicationForm({
   );
 }
 
-// Local helpers — they exist only to keep the markup above readable, so there's
-// no reason to give them their own files.
 function Field({ label, error, optional = false, children }) {
   return (
     <label className="flex flex-col gap-1.5">

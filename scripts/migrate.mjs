@@ -8,7 +8,7 @@ config({ path: '.env.local' });
 
 const { Pool } = pkg;
 
-// __dirname isn't defined in ES modules, so we rebuild it from import.meta.url.
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 async function migrate() {

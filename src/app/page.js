@@ -12,17 +12,12 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState(null);
 
-  // Modal state. `editing` doubles as the mode flag: null means the form is in
-  // "add" mode; an application object means "edit that one".
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // The application awaiting delete confirmation, or null if none.
   const [deleteTarget, setDeleteTarget] = useState(null);
 
-  // Load both datasets once on mount: statuses feed the form's dropdown,
-  // applications fill the table.
   useEffect(() => {
     async function loadInitialData() {
       try {
@@ -44,8 +39,6 @@ export default function Home() {
     loadInitialData();
   }, []);
 
-  // Re-fetch the list after any change. One extra request, but it keeps the UI
-  // in lockstep with the database rather than hand-patching local state.
   async function refreshApplications() {
     const res = await fetch('/api/applications');
     if (res.ok) setApplications(await res.json());
@@ -65,7 +58,6 @@ export default function Home() {
       try {
         await refreshApplications();
       } catch {
-        // Server unreachable — leave the table as-is.
       }
     }
   }
@@ -85,8 +77,6 @@ export default function Home() {
     setEditing(null);
   }
 
-  // Handles both create and update — which one is decided by whether we're
-  // editing an existing application or not.
   async function handleSubmit(payload) {
     setIsSubmitting(true);
     try {
@@ -140,7 +130,7 @@ export default function Home() {
             Job Application Tracker
           </h1>
           <p className="mt-1 text-sm text-muted">
-            Keep every application — and where it stands — in one place.
+            Manage Your Applications "In One Place".
           </p>
         </div>
         <button

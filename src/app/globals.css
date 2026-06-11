@@ -1,26 +1,17 @@
 @import "tailwindcss";
 
-/*
-  Design tokens for the whole app. Keeping every colour and font reference in
-  one place keeps the palette consistent across components, and makes a future
-  restyle a single-file change. Tailwind v4 turns each token under @theme into a
-  matching utility (e.g. --color-ink becomes text-ink / bg-ink).
-*/
+
 @theme {
-  /* Fonts wired up by the Next.js layout (Geist), with safe fallbacks. */
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 
-  /* Neutral chrome — kept quiet so the status colours carry the meaning. */
-  --color-paper: #f7f7f5;     /* page background */
-  --color-surface: #ffffff;   /* cards and table */
-  --color-line: #e9e9e4;      /* hairline borders */
-  --color-ink: #1a1a17;       /* primary text and primary buttons */
-  --color-ink-soft: #4a4a44;  /* secondary text */
-  --color-muted: #7c7c72;     /* captions and placeholders */
+  --color-paper: #f7f7f5;     
+  --color-surface: #ffffff;   
+  --color-line: #e9e9e4;      
+  --color-ink: #1a1a17;       
+  --color-ink-soft: #4a4a44;  
+  --color-muted: #7c7c72;     
 
-  /* Semantic status palette: a soft tint plus a readable foreground per state.
-     The colours follow a job hunt's arc rather than being picked at random. */
   --color-applied-bg: #eef2f6;
   --color-applied-fg: #3c5066;
   --color-interview-bg: #fdf3e1;
@@ -39,7 +30,6 @@ body {
   font-family: var(--font-sans);
 }
 
-/* Respect users who prefer reduced motion. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

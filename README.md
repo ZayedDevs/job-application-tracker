@@ -1,36 +1,162 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Job Application Tracker
+
+A web app for logging and tracking job applications through their lifecycle —
+from first applied, through interviews, to an offer, rejection, or withdrawal.
+Each application records its company, role, date, status, and notes, and a live
+dashboard shows how many applications sit in each stage.
+
+Built with Next.js (App Router) and PostgreSQL.
+
+## Features
+
+- Add, edit, and delete job applications
+- Five-stage status workflow: Applied → Interview Scheduled → Offer Received → Rejected → Withdrawn
+- Change an application's status inline, directly from the table
+- Dashboard with live per-status counts that update as the data changes
+
+## Tech Stack
+
+- **Next.js (App Router)** — UI and API (Route Handlers)
+- **PostgreSQL** — data storage, accessed with raw parameterized SQL via `node-postgres` (`pg`)
+- **Tailwind CSS** — styling
+
+No ORM is used: queries are written as plain SQL so the data layer stays explicit
+and easy to read. Every query is parameterized to guard against SQL injection.
+
+## Prerequisites
+
+- **Node.js** 18 or newer (developed on v20)
+- **PostgreSQL** 14 or newer (developed on v18)
 
 ## Getting Started
 
-First, run the development server:
+### 1. Clone and install
+
+```bash
+git clone <your-repo-url>
+cd job-application-tracker
+npm install
+```
+
+### 2. Create the database
+
+```bash
+psql -U postgres -c "CREATE DATABASE job_application_tracker;"
+```
+
+### 3. Configure environment variables
+
+Copy the example file and fill in your local PostgreSQL credentials:
+
+```bash
+# macOS / Linux
+cp .env.example .env.local
+
+# Windows (PowerShell)
+Copy-Item .env.example .env.local
+```
+
+Then open `.env.local` and set your connection string:
+
+```
+DATABASE_URL=postgresql://postgres:YOUR_PASSWORD@localhost:5432/job_application_tracker
+```
+
+### 4. Create the tables and seed the statuses
+
+```bash
+npm run db:migrate   # creates the tables
+npm run db:seed      # inserts the five application statuses
+```
+
+### 5. Run the app
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Available Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Script               | Description                        |
+| -------------------- | ---------------------------------- |
+| `npm run dev`        | Start the development server       |
+| `npm run build`      | Build for production               |
+| `npm run start`      | Run the production build           |
+| `npm run db:migrate` | Create the database tables         |
+| `npm run db:seed`    | Seed the five application statuses |
 
-## Learn More
+## Database Schema
 
-To learn more about Next.js, take a look at the following resources:
+**`statuses`** — the fixed set of application stages.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Column  | Type   | Notes              |
+| ------- | ------ | ------------------ |
+| `id`    | SERIAL | Primary key        |
+| `label` | TEXT   | Unique status name |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**`applications`** — one row per job application.
 
-## Deploy on Vercel
+| Column         | Type        | Notes                                 |
+| -------------- | ----------- | ------------------------------------- |
+| `id`           | SERIAL      | Primary key                           |
+| `company`      | TEXT        | Required                              |
+| `role`         | TEXT        | Required                              |
+| `date_applied` | DATE        | Required                              |
+| `status_id`    | INTEGER     | Required, foreign key → `statuses.id` |
+| `notes`        | TEXT        | Optional                              |
+| `created_at`   | TIMESTAMPTZ | Defaults to the current time          |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+`status_id` is a foreign key into `statuses`, so the database itself guarantees
+every application has a valid status.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## API Routes
+
+| Method   | Route                   | Description                 |
+| -------- | ----------------------- | --------------------------- |
+| `GET`    | `/api/applications`     | List all applications       |
+| `POST`   | `/api/applications`     | Create an application       |
+| `GET`    | `/api/applications/:id` | Get a single application    |
+| `PUT`    | `/api/applications/:id` | Update an application       |
+| `DELETE` | `/api/applications/:id` | Delete an application       |
+| `GET`    | `/api/statuses`         | List the available statuses |
+
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── api/
+│   │   ├── applications/
+│   │   │   ├── route.js           # GET (list), POST
+│   │   │   └── [id]/route.js       # GET, PUT, DELETE
+│   │   └── statuses/route.js       # GET
+│   ├── page.js                     # main page — state, data fetching, layout
+│   └── globals.css                 # design tokens and base styles
+├── components/
+│   ├── ApplicationTable.js
+│   ├── ApplicationForm.js
+│   ├── StatusBadge.js
+│   ├── StatusSelect.js
+│   ├── DashboardSummary.js
+│   └── Modal.js
+└── lib/
+    ├── db.js                       # PostgreSQL connection pool
+    └── statusStyles.js             # shared status colour map
+
+scripts/
+├── schema.sql                      # table definitions
+├── migrate.mjs                     # runs schema.sql
+└── seed.mjs                        # seeds the statuses
+```
+
+## Implementation Notes
+
+- **Raw parameterized SQL, no ORM.** With only two tables, plain `pg` keeps the
+  data layer transparent; every value is passed as a query parameter, never
+  string-concatenated.
+- **The UI re-fetches after each change** rather than patching local state, so
+  the table and dashboard always reflect the actual database.
+- **Statuses live in their own table** and are seeded once, giving the app a
+  single source of truth that the form and dashboard both read from.

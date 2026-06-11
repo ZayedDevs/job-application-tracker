@@ -1,8 +1,5 @@
 import StatusSelect from './StatusSelect';
 
-// The list of applications, rendered as a table. Presentational only — it
-// receives the data and callbacks, and reports the user's intent (edit, delete,
-// change status) back to the parent, which owns the state and the API calls.
 export default function ApplicationTable({
   applications,
   statuses,
@@ -89,7 +86,6 @@ function Th({ children, className = '' }) {
   );
 }
 
-// The API sends an ISO timestamp; show a compact, readable date instead.
 function formatDate(iso) {
   if (!iso) return '—';
   return new Date(iso).toLocaleDateString('en-GB', {
