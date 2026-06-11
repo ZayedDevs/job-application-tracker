@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import ApplicationTable from '@/components/ApplicationTable';
 import ApplicationForm from '@/components/ApplicationForm';
 import Modal from '@/components/Modal';
+import DashboardSummary from '@/components/DashboardSummary';
 
 export default function Home() {
   const [applications, setApplications] = useState([]);
@@ -157,13 +158,16 @@ export default function Home() {
           {loadError}
         </div>
       ) : (
-        <ApplicationTable
-          applications={applications}
-          statuses={statuses}
-          onEdit={openEditForm}
-          onDelete={setDeleteTarget}
-          onStatusChange={handleStatusChange}
-        />
+        <>
+          <DashboardSummary applications={applications} statuses={statuses} />
+          <ApplicationTable
+            applications={applications}
+            statuses={statuses}
+            onEdit={openEditForm}
+            onDelete={setDeleteTarget}
+            onStatusChange={handleStatusChange}
+          />
+        </>
       )}
 
       {/* Add / edit form, shown in a modal */}
