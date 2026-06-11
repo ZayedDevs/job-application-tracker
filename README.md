@@ -62,6 +62,8 @@ Then open `.env.local` and set your connection string:
 DATABASE_URL=postgresql://postgres:YOUR_PASSWORD@localhost:5432/job_application_tracker
 ```
 
+# Or open .env.local directly in VS Code and paste the contents manually
+
 ### 4. Create the tables and seed the statuses
 
 ```bash
