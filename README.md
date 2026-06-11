@@ -33,7 +33,7 @@ and easy to read. Every query is parameterized to guard against SQL injection.
 ### 1. Clone and install
 
 ```bash
-git clone <your-repo-url>
+git clone git clone https://github.com/ZayedDevs/job-application-tracker.git
 cd job-application-tracker
 npm install
 ```
@@ -56,13 +56,13 @@ cp .env.example .env.local
 Copy-Item .env.example .env.local
 ```
 
+# Or open VS Code in the project folder and create .env.local manually
+
 Then open `.env.local` and set your connection string:
 
 ```
 DATABASE_URL=postgresql://postgres:YOUR_PASSWORD@localhost:5432/job_application_tracker
 ```
-
-# Or open .env.local directly in VS Code and paste the contents manually
 
 ### 4. Create the tables and seed the statuses
 
