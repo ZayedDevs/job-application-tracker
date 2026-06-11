@@ -1,9 +1,15 @@
-import StatusBadge from './StatusBadge';
+import StatusSelect from './StatusSelect';
 
 // The list of applications, rendered as a table. Presentational only — it
-// receives the data and two callbacks, and reports the user's intent (edit /
-// delete) back to the parent, which owns the state and the API calls.
-export default function ApplicationTable({ applications, onEdit, onDelete }) {
+// receives the data and callbacks, and reports the user's intent (edit, delete,
+// change status) back to the parent, which owns the state and the API calls.
+export default function ApplicationTable({
+  applications,
+  statuses,
+  onEdit,
+  onDelete,
+  onStatusChange,
+}) {
   if (applications.length === 0) {
     return (
       <div className="rounded-xl border border-line bg-surface px-6 py-16 text-center">
@@ -40,7 +46,11 @@ export default function ApplicationTable({ applications, onEdit, onDelete }) {
                 {formatDate(app.date_applied)}
               </td>
               <td className="px-4 py-3">
-                <StatusBadge label={app.status_label} />
+                <StatusSelect
+                  value={app.status_id}
+                  statuses={statuses}
+                  onChange={(newStatusId) => onStatusChange(app, newStatusId)}
+                />
               </td>
               <td className="hidden max-w-xs px-4 py-3 text-muted md:table-cell">
                 <span className="line-clamp-2">{app.notes || '—'}</span>

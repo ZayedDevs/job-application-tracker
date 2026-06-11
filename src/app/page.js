@@ -50,6 +50,25 @@ export default function Home() {
     if (res.ok) setApplications(await res.json());
   }
 
+  async function handleStatusChange(application, newStatusId) {
+    try {
+      const res = await fetch(`/api/applications/${application.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status_id: newStatusId }),
+      });
+      if (!res.ok) throw new Error('Failed to update status');
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      try {
+        await refreshApplications();
+      } catch {
+        // Server unreachable — leave the table as-is.
+      }
+    }
+  }
+
   function openAddForm() {
     setEditing(null);
     setFormOpen(true);
@@ -140,8 +159,10 @@ export default function Home() {
       ) : (
         <ApplicationTable
           applications={applications}
+          statuses={statuses}
           onEdit={openEditForm}
           onDelete={setDeleteTarget}
+          onStatusChange={handleStatusChange}
         />
       )}
 
